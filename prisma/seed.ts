@@ -5,11 +5,22 @@ import example from "./example2.json";
 const prisma = new PrismaClient();
 
 async function main() {
-  // const { id: categoryId } = await prisma.category.create({
-  //   data: {
-  //     name: "设计",
-  //   },
-  // });
+  // Create a category first
+  const category = await prisma.category.upsert({
+    where: { name: "设计" },
+    update: {},
+    create: { name: "设计" },
+  });
+
+  // Create a user first
+  const user = await prisma.user.upsert({
+    where: { email: "test@example.com" },
+    update: {},
+    create: {
+      email: "test@example.com",
+      name: "Test User",
+    },
+  });
 
   const chapters = example.data.outlines.reduce((res, item) => {
     item.lectures.forEach((lecture) => {
@@ -30,8 +41,8 @@ async function main() {
       title: example.data.title,
       desc: example.data.brief,
       pic: example.data.cover_url,
-      categoryId: 1,
-      authorId: "cl95b4ny10000fjnuhm7rvys5",
+      categoryId: category.id,
+      authorId: user.id,
       chapter: {
         createMany: {
           data: chapters,

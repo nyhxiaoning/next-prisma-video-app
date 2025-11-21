@@ -1,5 +1,6 @@
 import React from "react";
 import { getCsrfToken } from "next-auth/react";
+import { GetServerSideProps } from "next";
 import {
   Text,
   Button,
@@ -11,7 +12,7 @@ import {
   TabPanel,
 } from "@chakra-ui/react";
 
-export default function Login({ csrfToken }) {
+export default function Login({ csrfToken }: { csrfToken: string | null }) {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <Tabs className="w-96 p-5 border rounded-lg bg-white">
@@ -41,7 +42,7 @@ export default function Login({ csrfToken }) {
                 size="lg"
                 type="hidden"
                 name="csrfToken"
-                value={csrfToken}
+                value={csrfToken || ''}
               />
               <div>
                 <Input
@@ -104,7 +105,7 @@ export default function Login({ csrfToken }) {
                 size="lg"
                 type="hidden"
                 name="csrfToken"
-                value={csrfToken}
+                value={csrfToken || ''}
               />
               <div>
                 <Input
@@ -133,9 +134,20 @@ export default function Login({ csrfToken }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const csrfToken = await getCsrfToken(context);
-  return {
-    props: { csrfToken },
-  };
-}
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const csrfToken = await getCsrfToken(context);
+    return {
+      props: { 
+        csrfToken: csrfToken ?? null, // Convert undefined to null for JSON serialization
+      },
+    };
+  } catch (error) {
+    console.error("Error getting CSRF token:", error);
+    return {
+      props: { 
+        csrfToken: null,
+      },
+    };
+  }
+};

@@ -1,6 +1,6 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
+
 
 First, run the development server:
 
@@ -9,6 +9,15 @@ npm run dev
 # or
 yarn dev
 ```
+
+## 项目初始化报错：Error: Cannot find module '.prisma/client/index'
+### 注意有prisma的项目，第一步：
+安装依赖后，npx prisma generate
+
+### 第二步：导入数据库
+
+
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
